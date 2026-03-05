@@ -1,0 +1,1287 @@
+---
+import { dishes } from '../data/dishes';
+---
+
+<div class="app-shell" id="app-shell">
+  <!-- ===== VIEW: SWIPE ===== -->
+  <div class="view view--active" id="view-swipe">
+    <header class="header">
+      <div class="header__top">
+        <h1 class="header__title">Nakama</h1>
+        <p class="header__subtitle">Magdalena 2026</p>
+      </div>
+      <p class="header__tagline">Mercado Gastronomico &middot; Del 7 al 15 de Marzo</p>
+    </header>
+
+    <div class="cards-container" id="cards-container">
+      <div class="empty-state" id="empty-state" style="display:none;">
+        <div class="empty-state__icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+          </svg>
+        </div>
+        <h2>No quedan platos!</h2>
+        <p>Ya has ligado con toda la carta. Hora de ir al lio.</p>
+        <button class="btn btn--primary" id="go-matches-btn">Ver mis matches</button>
+        <button class="btn btn--secondary" id="reset-btn">Otra ronda?</button>
+        <a href="https://g.page/r/CYe0jvhYkTL_EBM/review" target="_blank" rel="noopener noreferrer" class="review-cta review-cta--centered">
+          <div class="review-cta__content">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+            </svg>
+            <div>
+              <strong>Ha habido conexion?</strong>
+              <span>Cuentaselo a Google con una resena</span>
+            </div>
+          </div>
+          <svg class="review-cta__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      {dishes.map((dish, index) => (
+        <div
+          class={`card ${index === 0 ? 'card--front' : ''} ${index === 1 ? 'card--second' : ''} ${index === 2 ? 'card--third' : ''}`}
+          data-dish-id={dish.id}
+          data-index={index}
+          style={`z-index: ${dishes.length - index}; display: ${index < 3 ? 'flex' : 'none'}`}
+        >
+          <div class="card__image-wrapper">
+            <div class="card__image-placeholder" style={`background: hsl(${dish.id * 60 + 180}, 30%, 18%)`}>
+              <span class="card__image-emoji">
+                {dish.id === 1 ? '🐟' : dish.id === 2 ? '🐷' : dish.id === 3 ? '🍄' : dish.id === 4 ? '🐙' : '🍰'}
+              </span>
+            </div>
+            <div class="card__stamp card__stamp--like" id={`stamp-like-${dish.id}`}>VITOL!</div>
+            <div class="card__stamp card__stamp--nope" id={`stamp-nope-${dish.id}`}>PASO</div>
+          </div>
+          <div class="card__content">
+            <h2 class="card__name">{dish.name}</h2>
+            <p class="card__chef">{dish.chef} &middot; {dish.stand}</p>
+            <p class="card__description">{dish.description}</p>
+            <div class="card__tags">
+              {dish.tags.map(tag => (
+                <span class="card__tag">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="actions" id="actions">
+      <button class="action-btn action-btn--nope" id="btn-nope" aria-label="Pasar">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <button class="action-btn action-btn--like" id="btn-like" aria-label="Me gusta">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="progress" id="progress">
+      {dishes.map((_, index) => (
+        <div class="progress__dot" data-progress-index={index}></div>
+      ))}
+    </div>
+  </div>
+
+  <!-- ===== VIEW: MATCHES ===== -->
+  <div class="view" id="view-matches">
+    <header class="header">
+      <h1 class="header__title">Mis Matches</h1>
+    </header>
+    <div class="tab-content">
+      <div class="matches-empty" id="tab-matches-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-gray)" stroke-width="1.5">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <p>Aqui no hay matches... todavia</p>
+        <span>Desliza a la derecha si te enamora, a la izquierda si no es tu tipo</span>
+      </div>
+      <div class="matches-list" id="tab-matches-list">
+        {dishes.map(dish => (
+          <div class="match-item" data-match-dish-id={dish.id} style="display:none;">
+            <div class="match-item__color" style={`background: hsl(${dish.id * 60 + 180}, 30%, 18%)`}>
+              <span>{dish.id === 1 ? '🐟' : dish.id === 2 ? '🐷' : dish.id === 3 ? '🍄' : dish.id === 4 ? '🐙' : '🍰'}</span>
+            </div>
+            <div class="match-item__info">
+              <strong>{dish.name}</strong>
+              <span class="match-item__stand">{dish.stand}</span>
+              <span class="match-item__chef">{dish.chef}</span>
+            </div>
+            <button class="match-item__remove" data-match-remove-id={dish.id} aria-label="Eliminar match">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        ))}
+      </div>
+      <a href="https://g.page/r/CYe0jvhYkTL_EBM/review" target="_blank" rel="noopener noreferrer" class="review-cta" id="review-cta" style="display:none;">
+        <div class="review-cta__content">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+          </svg>
+          <div>
+            <strong>Enamorado de Nakama?</strong>
+            <span>Desliza al 5 estrellas en Google</span>
+          </div>
+        </div>
+        <svg class="review-cta__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <button class="reset-inline-btn" id="tab-reset-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+        Borron y plato nuevo
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== VIEW: INFO ===== -->
+  <div class="view" id="view-info">
+    <header class="header">
+      <h1 class="header__title">Nakama Fusion</h1>
+    </header>
+    <div class="tab-content">
+      <div class="info-magdalena">
+        <div class="magdalena-badge">
+          <span class="magdalena-badge__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-magdalena)" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="5" r="3"/>
+              <line x1="12" y1="8" x2="12" y2="20"/>
+              <path d="M9 12 Q6 14 8 17"/>
+              <path d="M15 12 Q18 14 16 17"/>
+            </svg>
+          </span>
+          <div>
+            <strong>Fiestas de la Magdalena 2026</strong>
+            <span>Del 7 al 15 de Marzo &middot; Castellon de la Plana</span>
+          </div>
+        </div>
+        <p class="magdalena-desc">Nakama se lanza a las fiestas fundacionales de Castellon con sus platos mas irresistibles. Desliza, enamorate y ven a probarlos. Magdalena Vitol!</p>
+      </div>
+
+      <div class="info-card">
+        <p class="info-tagline">Donde Asia y el Mediterraneo se dan un match en el corazon de Castellon</p>
+        <div class="info-rows">
+          <div class="info-row">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <div>
+              <strong>Direccion</strong>
+              <span>C/ Obispo Climent 3, 12001 Castellon de la Plana</span>
+            </div>
+          </div>
+          <div class="info-row">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <div>
+              <strong>Telefono</strong>
+              <a href="tel:+34627944481">+34 627 94 44 81</a>
+            </div>
+          </div>
+          <div class="info-row">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <div>
+              <strong>Horario</strong>
+              <span>Martes: 13:30 - 17:00</span>
+              <span>Miercoles - Sabado: 13:30 - 17:00 / 20:30 - 00:00</span>
+              <span>Domingo y Lunes: Cerrado</span>
+            </div>
+          </div>
+          <div class="info-row">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <div>
+              <strong>Email</strong>
+              <a href="mailto:nakamarestaurantecastellon@gmail.com">nakamarestaurantecastellon@gmail.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="social-section">
+        <p class="social-title">Siguenos el rollo</p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/nakama.restaurante/" target="_blank" rel="noopener noreferrer" class="social-link social-link--instagram" aria-label="Instagram">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+            <span>@nakama.restaurante</span>
+          </a>
+          <a href="https://www.facebook.com/nakama.restaurante" target="_blank" rel="noopener noreferrer" class="social-link social-link--facebook" aria-label="Facebook">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+            </svg>
+            <span>Nakama Restaurante</span>
+          </a>
+          <a href="https://www.tripadvisor.com/Restaurant_Review-g187522-d27662968-Reviews-Nakama-Castellon_de_la_Plana_Province_of_Castellon_Valencian_Community.html" target="_blank" rel="noopener noreferrer" class="social-link social-link--tripadvisor" aria-label="TripAdvisor">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="4"></circle>
+              <circle cx="12" cy="12" r="1"></circle>
+            </svg>
+            <span>TripAdvisor</span>
+          </a>
+        </div>
+      </div>
+
+      <a href="https://g.page/r/CYe0jvhYkTL_EBM/review" target="_blank" rel="noopener noreferrer" class="review-cta" style="margin-top:16px;">
+        <div class="review-cta__content">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+          </svg>
+          <div>
+            <strong>Enamorado de Nakama?</strong>
+            <span>Desliza al 5 estrellas en Google</span>
+          </div>
+        </div>
+        <svg class="review-cta__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <a href="/privacidad" class="info-privacy-link">Politica de privacidad</a>
+    </div>
+  </div>
+
+  <!-- ===== TAB BAR ===== -->
+  <nav class="tab-bar" id="tab-bar">
+    <button class="tab-bar__item tab-bar__item--active" data-tab="swipe">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+        <path d="M12 8v8m-4-4h8"></path>
+      </svg>
+      <span>Platos</span>
+    </button>
+    <button class="tab-bar__item" data-tab="matches">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+      <span>Matches</span>
+      <span class="tab-bar__badge" id="tab-badge">0</span>
+    </button>
+    <button class="tab-bar__item" data-tab="info">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M3 2l3 18h12l3-18"></path>
+        <path d="M6 2c0 3 2 6 6 6s6-3 6-6"></path>
+      </svg>
+      <span>Nakama</span>
+    </button>
+  </nav>
+</div>
+
+<style>
+  /* App Shell */
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    position: relative;
+  }
+
+  .view {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    padding-bottom: 72px;
+  }
+
+  .view--active {
+    display: flex;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 20px 10px;
+    border-bottom: 1px solid var(--color-surface-elevated);
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--color-magdalena);
+    border-radius: 2px;
+  }
+
+  .header__top {
+    display: flex;
+    align-items: center;
+  }
+
+  .header__title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  .header__subtitle {
+    font-size: 0.7rem;
+    color: var(--color-magdalena);
+    margin-left: 8px;
+    padding-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  .header__tagline {
+    font-size: 0.6rem;
+    color: var(--color-gray);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 4px;
+  }
+
+  /* Tab Bar */
+  .tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    display: flex;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-surface-elevated);
+    padding: 6px 0;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+    z-index: 50;
+  }
+
+  .tab-bar__item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 0;
+    color: var(--color-gray);
+    transition: color 0.2s;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tab-bar__item--active {
+    color: var(--color-primary);
+  }
+
+  .tab-bar__item span:not(.tab-bar__badge) {
+    font-size: 0.6rem;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .tab-bar__badge {
+    position: absolute;
+    top: 2px;
+    right: calc(50% - 20px);
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background: var(--color-primary);
+    color: #ffffff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    font-family: var(--font-body);
+  }
+
+  .tab-bar__badge.visible {
+    display: flex;
+  }
+
+  /* Tab Content */
+  .tab-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 20px;
+  }
+
+  /* Cards */
+  .cards-container {
+    position: relative;
+    width: 100%;
+    height: calc(100dvh - 250px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+  }
+
+  .card {
+    position: absolute;
+    width: calc(100% - 96px);
+    max-height: calc(100dvh - 280px);
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--color-surface-elevated);
+    overflow: hidden;
+    flex-direction: column;
+    touch-action: none;
+    user-select: none;
+    will-change: transform;
+    transition: transform 0.35s ease, opacity 0.35s ease, box-shadow 0.3s;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .card--front {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .card--second {
+    transform: rotate(3deg) scale(0.95) translateX(12px) translateY(8px);
+    opacity: 0.7;
+  }
+
+  .card--third {
+    transform: rotate(-2.5deg) scale(0.90) translateX(-10px) translateY(16px);
+    opacity: 0.4;
+  }
+
+  .card__image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .card__image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card__image-emoji {
+    font-size: 5rem;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+  }
+
+  .card__stamp {
+    position: absolute;
+    top: 20px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    opacity: 0;
+    transition: opacity 0.15s;
+    pointer-events: none;
+  }
+
+  .card__stamp--like {
+    right: 20px;
+    color: var(--color-like);
+    border: 4px solid var(--color-like);
+    transform: rotate(15deg);
+  }
+
+  .card__stamp--nope {
+    left: 20px;
+    color: var(--color-nope);
+    border: 4px solid var(--color-nope);
+    transform: rotate(-15deg);
+  }
+
+  .card__content {
+    padding: 16px 20px 20px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .card__name {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    color: #1a1a1a;
+  }
+
+  .card__chef {
+    font-size: 0.8rem;
+    color: var(--color-gray);
+    margin-bottom: 10px;
+  }
+
+  .card__description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #555555;
+    margin-bottom: 12px;
+  }
+
+  .card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .card__tag {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--color-surface-elevated);
+    color: var(--color-primary);
+    border: 1px solid #d0d9d1;
+  }
+
+  /* Actions */
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 12px 0;
+  }
+
+  .action-btn {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .action-btn:active { transform: scale(0.9); }
+
+  .action-btn--nope {
+    background: var(--color-surface);
+    border: 2px solid var(--color-nope);
+    color: var(--color-nope);
+  }
+
+  .action-btn--like {
+    background: var(--color-surface);
+    border: 2px solid var(--color-like);
+    color: var(--color-like);
+  }
+
+  /* Progress */
+  .progress {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding-bottom: 12px;
+  }
+
+  .progress__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d0d9d1;
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .progress__dot.active { background: var(--color-primary); transform: scale(1.3); }
+  .progress__dot.done { background: var(--color-magdalena); }
+  .progress__dot.skipped { background: var(--color-gray); }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .empty-state h2 {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #1a1a1a;
+  }
+
+  .empty-state p { color: var(--color-gray); font-size: 0.9rem; }
+
+  .btn {
+    display: inline-block;
+    padding: 14px 32px;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: transform 0.2s, opacity 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn:active { transform: scale(0.95); }
+  .btn--primary { background: var(--color-primary); color: #ffffff; }
+
+  .btn--secondary {
+    background: transparent;
+    color: var(--color-gray);
+    text-decoration: underline;
+    padding: 8px;
+  }
+
+  /* Matches View */
+  .matches-empty {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .matches-empty p {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #1a1a1a;
+  }
+
+  .matches-empty span {
+    font-size: 0.8rem;
+    color: var(--color-gray);
+  }
+
+  .matches-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .match-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-surface-elevated);
+    border-radius: 12px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+
+  .match-item.removing {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  .match-item__color {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.5rem;
+  }
+
+  .match-item__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .match-item__info strong {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #1a1a1a;
+  }
+
+  .match-item__stand {
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .match-item__chef {
+    font-size: 0.7rem;
+    color: var(--color-gray);
+  }
+
+  .match-item__remove {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gray);
+    flex-shrink: 0;
+    transition: color 0.2s, background 0.2s;
+  }
+
+  .match-item__remove:active {
+    color: var(--color-nope);
+    background: rgba(231,76,60,0.15);
+  }
+
+  .review-cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(207, 46, 46, 0.06), rgba(207, 46, 46, 0.02));
+    border: 1px solid rgba(207, 46, 46, 0.15);
+    border-radius: 12px;
+    margin-top: 16px;
+    transition: background 0.2s, border-color 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .review-cta:active {
+    background: linear-gradient(135deg, rgba(207, 46, 46, 0.12), rgba(207, 46, 46, 0.04));
+    border-color: rgba(207, 46, 46, 0.3);
+  }
+
+  .review-cta__content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .review-cta__content svg {
+    flex-shrink: 0;
+    color: var(--color-primary);
+  }
+
+  .review-cta__content strong {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-primary);
+    display: block;
+  }
+
+  .review-cta__content span {
+    font-size: 0.7rem;
+    color: var(--color-gray);
+    line-height: 1.3;
+  }
+
+  .review-cta--centered {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .review-cta__arrow {
+    flex-shrink: 0;
+    color: var(--color-gray);
+  }
+
+  .reset-inline-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-surface-elevated);
+    color: var(--color-gray);
+    font-size: 0.8rem;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .reset-inline-btn:active {
+    background: var(--color-surface-elevated);
+    color: #1a1a1a;
+  }
+
+  /* Info View */
+  .info-magdalena {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.08), rgba(207, 46, 46, 0.06));
+    border: 1px solid rgba(76, 175, 80, 0.2);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .magdalena-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .magdalena-badge__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(76, 175, 80, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .magdalena-badge strong {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-magdalena);
+    display: block;
+  }
+
+  .magdalena-badge span {
+    font-size: 0.7rem;
+    color: var(--color-gray);
+  }
+
+  .magdalena-desc {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #555555;
+  }
+
+  .info-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-surface-elevated);
+    border-radius: 14px;
+    padding: 24px 20px;
+  }
+
+  .info-tagline {
+    font-size: 0.95rem;
+    color: #555555;
+    line-height: 1.5;
+    font-style: italic;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .info-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .info-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .info-row svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .info-row div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .info-row strong {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-primary);
+  }
+
+  .info-row span {
+    font-size: 0.8rem;
+    color: #444444;
+    line-height: 1.4;
+  }
+
+  .info-row a {
+    font-size: 0.8rem;
+    color: var(--color-primary);
+    text-decoration: underline;
+    word-break: break-all;
+  }
+
+  .social-section {
+    margin-top: 16px;
+  }
+
+  .social-title {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--color-gray);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-surface-elevated);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--color-dark);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .social-link:active {
+    transform: scale(0.98);
+  }
+
+  .social-link--facebook:active {
+    border-color: #1877F2;
+  }
+
+  .social-link--facebook svg {
+    color: #1877F2;
+  }
+
+  .social-link--instagram:active {
+    border-color: #E1306C;
+  }
+
+  .social-link--instagram svg {
+    color: #E1306C;
+  }
+
+  .social-link--tripadvisor:active {
+    border-color: #34E0A1;
+  }
+
+  .social-link--tripadvisor svg {
+    color: #34E0A1;
+  }
+
+  .social-link span {
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .info-privacy-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.7rem;
+    color: var(--color-gray);
+    text-decoration: underline;
+  }
+
+  /* Swipe Animations */
+  @keyframes cardSwipeRight {
+    to { transform: translateX(150%) rotate(30deg); opacity: 0; }
+  }
+
+  @keyframes cardSwipeLeft {
+    to { transform: translateX(-150%) rotate(-30deg); opacity: 0; }
+  }
+
+  .card.swipe-right { animation: cardSwipeRight 0.4s ease-out forwards; }
+  .card.swipe-left { animation: cardSwipeLeft 0.4s ease-out forwards; }
+</style>
+
+<script>
+  const STORAGE_KEY = 'foodswipe_matches';
+
+  // Swipe elements
+  const cards = document.querySelectorAll<HTMLElement>('.card');
+  const container = document.getElementById('cards-container')!;
+  const emptyState = document.getElementById('empty-state')!;
+  const actions = document.getElementById('actions')!;
+  const progressDots = document.querySelectorAll<HTMLElement>('.progress__dot');
+  const btnLike = document.getElementById('btn-like')!;
+  const btnNope = document.getElementById('btn-nope')!;
+  const resetBtn = document.getElementById('reset-btn')!;
+  const goMatchesBtn = document.getElementById('go-matches-btn')!;
+
+  // Tab elements
+  const views = document.querySelectorAll<HTMLElement>('.view');
+  const tabButtons = document.querySelectorAll<HTMLElement>('[data-tab]');
+  const tabBadge = document.getElementById('tab-badge')!;
+
+  // Matches view elements
+  const matchItems = document.querySelectorAll<HTMLElement>('[data-match-dish-id]');
+  const matchesEmpty = document.getElementById('tab-matches-empty')!;
+  const tabResetBtn = document.getElementById('tab-reset-btn')!;
+  const reviewCta = document.getElementById('review-cta')!;
+
+  let currentIndex = 0;
+  let startX = 0;
+  let startY = 0;
+  let currentX = 0;
+  let isDragging = false;
+  let matches: number[] = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+  // === TAB NAVIGATION ===
+  function switchTab(tabName: string) {
+    views.forEach(v => v.classList.remove('view--active'));
+    tabButtons.forEach(b => b.classList.remove('tab-bar__item--active'));
+    document.getElementById(`view-${tabName}`)?.classList.add('view--active');
+    document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('tab-bar__item--active');
+    if (tabName === 'matches') renderMatchesView();
+  }
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab!));
+  });
+
+  goMatchesBtn.addEventListener('click', () => switchTab('matches'));
+
+  // === MATCHES RENDERING ===
+  function renderMatchesView() {
+    let hasMatches = false;
+    matchItems.forEach(item => {
+      const id = Number(item.dataset.matchDishId);
+      if (matches.includes(id)) {
+        item.style.display = 'flex';
+        item.classList.remove('removing');
+        hasMatches = true;
+      } else {
+        item.style.display = 'none';
+      }
+    });
+    matchesEmpty.style.display = hasMatches ? 'none' : 'flex';
+    reviewCta.style.display = hasMatches ? 'flex' : 'none';
+  }
+
+  function updateBadge() {
+    tabBadge.textContent = String(matches.length);
+    if (matches.length > 0) {
+      tabBadge.classList.add('visible');
+    } else {
+      tabBadge.classList.remove('visible');
+    }
+  }
+
+  function saveMatches() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(matches));
+    updateBadge();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-match-remove-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.matchRemoveId);
+      const idx = matches.indexOf(id);
+      if (idx > -1) {
+        matches.splice(idx, 1);
+        saveMatches();
+        const item = btn.closest('.match-item') as HTMLElement;
+        item.classList.add('removing');
+        item.addEventListener('transitionend', () => renderMatchesView(), { once: true });
+      }
+    });
+  });
+
+  // === CARD STACK ===
+  function updateProgress(index: number, type: 'done' | 'skipped') {
+    if (progressDots[index]) {
+      progressDots[index].classList.remove('active');
+      progressDots[index].classList.add(type);
+    }
+    if (progressDots[index + 1]) {
+      progressDots[index + 1].classList.add('active');
+    }
+  }
+
+  function updateStack() {
+    cards.forEach((card, i) => {
+      const el = card as HTMLElement;
+      el.classList.remove('card--front', 'card--second', 'card--third');
+      if (i === currentIndex) {
+        el.style.display = 'flex';
+        el.classList.add('card--front');
+      } else if (i === currentIndex + 1) {
+        el.style.display = 'flex';
+        el.classList.add('card--second');
+      } else if (i === currentIndex + 2) {
+        el.style.display = 'flex';
+        el.classList.add('card--third');
+      } else if (i > currentIndex + 2) {
+        el.style.display = 'none';
+      }
+    });
+  }
+
+  function showNextCard() {
+    currentIndex++;
+    if (currentIndex < cards.length) {
+      updateStack();
+    } else {
+      emptyState.style.display = 'flex';
+      actions.style.display = 'none';
+    }
+  }
+
+  function swipeCard(direction: 'left' | 'right') {
+    if (currentIndex >= cards.length) return;
+    const card = cards[currentIndex] as HTMLElement;
+    const dishId = Number(card.dataset.dishId);
+
+    if (direction === 'right') {
+      card.classList.add('swipe-right');
+      matches.push(dishId);
+      saveMatches();
+      updateProgress(currentIndex, 'done');
+    } else {
+      card.classList.add('swipe-left');
+      updateProgress(currentIndex, 'skipped');
+    }
+
+    card.addEventListener('animationend', () => {
+      card.style.display = 'none';
+      showNextCard();
+    }, { once: true });
+  }
+
+  function getCurrentCard(): HTMLElement | null {
+    if (currentIndex >= cards.length) return null;
+    return cards[currentIndex] as HTMLElement;
+  }
+
+  // === DRAG HANDLING ===
+  function handleDragStart(e: TouchEvent | MouseEvent) {
+    const card = getCurrentCard();
+    if (!card) return;
+    isDragging = true;
+    const point = 'touches' in e ? e.touches[0] : e;
+    startX = point.clientX;
+    startY = point.clientY;
+    currentX = 0;
+    card.style.transition = 'none';
+  }
+
+  function handleDragMove(e: TouchEvent | MouseEvent) {
+    if (!isDragging) return;
+    const card = getCurrentCard();
+    if (!card) return;
+    const point = 'touches' in e ? e.touches[0] : e;
+    currentX = point.clientX - startX;
+    const currentY = point.clientY - startY;
+    if (Math.abs(currentX) < Math.abs(currentY) && Math.abs(currentX) < 10) return;
+    e.preventDefault();
+    const rotation = currentX * 0.1;
+    const opacity = Math.min(Math.abs(currentX) / 100, 1);
+    card.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`;
+    const stampLike = document.getElementById(`stamp-like-${card.dataset.dishId}`);
+    const stampNope = document.getElementById(`stamp-nope-${card.dataset.dishId}`);
+    if (stampLike && stampNope) {
+      stampLike.style.opacity = currentX > 0 ? String(opacity) : '0';
+      stampNope.style.opacity = currentX < 0 ? String(opacity) : '0';
+    }
+  }
+
+  function handleDragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    const card = getCurrentCard();
+    if (!card) return;
+    card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+    if (Math.abs(currentX) > 80) {
+      swipeCard(currentX > 0 ? 'right' : 'left');
+    } else {
+      card.style.transform = 'rotate(0deg) scale(1)';
+      const stampLike = document.getElementById(`stamp-like-${card.dataset.dishId}`);
+      const stampNope = document.getElementById(`stamp-nope-${card.dataset.dishId}`);
+      if (stampLike) stampLike.style.opacity = '0';
+      if (stampNope) stampNope.style.opacity = '0';
+    }
+  }
+
+  container.addEventListener('touchstart', handleDragStart, { passive: true });
+  container.addEventListener('touchmove', handleDragMove, { passive: false });
+  container.addEventListener('touchend', handleDragEnd);
+  container.addEventListener('mousedown', handleDragStart);
+  container.addEventListener('mousemove', handleDragMove);
+  container.addEventListener('mouseup', handleDragEnd);
+  container.addEventListener('mouseleave', handleDragEnd);
+
+  btnLike.addEventListener('click', () => swipeCard('right'));
+  btnNope.addEventListener('click', () => swipeCard('left'));
+
+  // === RESET ===
+  function resetGame() {
+    localStorage.removeItem(STORAGE_KEY);
+    matches = [];
+    currentIndex = 0;
+    updateBadge();
+    cards.forEach((card) => {
+      const el = card as HTMLElement;
+      el.classList.remove('swipe-left', 'swipe-right');
+      el.style.transform = '';
+      el.style.transition = '';
+    });
+    updateStack();
+    progressDots.forEach(dot => dot.classList.remove('done', 'skipped', 'active'));
+    progressDots[0]?.classList.add('active');
+    emptyState.style.display = 'none';
+    actions.style.display = 'flex';
+    switchTab('swipe');
+  }
+
+  resetBtn.addEventListener('click', resetGame);
+  tabResetBtn.addEventListener('click', resetGame);
+
+  // === INIT ===
+  updateBadge();
+  progressDots[0]?.classList.add('active');
+</script>

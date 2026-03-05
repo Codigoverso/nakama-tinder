@@ -1,0 +1,257 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { dishes } from '../data/dishes';
+---
+
+<Layout title="Mis Matches - Nakama">
+  <div class="matches-page">
+    <header class="matches-header">
+      <a href="/" class="back-btn" aria-label="Volver">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </a>
+      <h1>Mis Matches</h1>
+    </header>
+
+    <div class="matches-empty" id="matches-empty">
+      <p>Aun no tienes matches.</p>
+      <a href="/" class="btn-back">Descubrir platos</a>
+    </div>
+
+    <div class="matches-list" id="matches-list">
+      {dishes.map(dish => (
+        <div class="match-card" data-dish-id={dish.id} style="display:none;">
+          <div class="match-card__image" style={`background: hsl(${dish.id * 60 + 180}, 30%, 18%)`}>
+            <span class="match-card__emoji">
+              {dish.id === 1 ? '🐟' : dish.id === 2 ? '🐷' : dish.id === 3 ? '🍄' : dish.id === 4 ? '🐙' : '🍰'}
+            </span>
+          </div>
+          <div class="match-card__info">
+            <h2>{dish.name}</h2>
+            <p class="match-card__chef">{dish.chef}</p>
+            <p class="match-card__stand">{dish.stand}</p>
+            <div class="match-card__tags">
+              {dish.tags.map(tag => <span class="tag">{tag}</span>)}
+            </div>
+          </div>
+          <button class="match-card__remove" data-remove-id={dish.id} aria-label="Eliminar match">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      ))}
+    </div>
+
+    <div class="matches-footer">
+      <a href="/privacidad" class="privacy-link">Politica de privacidad</a>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .matches-page {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .matches-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--color-surface-elevated);
+  }
+
+  .matches-header h1 {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--color-dark);
+    transition: background 0.2s;
+  }
+
+  .back-btn:active {
+    background: var(--color-surface-elevated);
+  }
+
+  .matches-empty {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    color: var(--color-gray);
+    padding: 40px;
+  }
+
+  .btn-back {
+    padding: 12px 28px;
+    border-radius: 30px;
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+  }
+
+  .matches-list {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .match-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-surface-elevated);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s, opacity 0.3s;
+  }
+
+  .match-card.removing {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  .match-card__image {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .match-card__emoji {
+    font-size: 2rem;
+  }
+
+  .match-card__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .match-card__info h2 {
+    font-size: 1rem;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-dark);
+    margin-bottom: 2px;
+  }
+
+  .match-card__chef {
+    font-size: 0.75rem;
+    color: var(--color-gray);
+  }
+
+  .match-card__stand {
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .match-card__tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: var(--color-surface-elevated);
+    color: var(--color-primary);
+    border: 1px solid #d0d9d1;
+  }
+
+  .match-card__remove {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gray);
+    flex-shrink: 0;
+    transition: color 0.2s, background 0.2s;
+  }
+
+  .match-card__remove:active {
+    color: var(--color-nope);
+    background: rgba(231,76,60,0.15);
+  }
+
+  .matches-footer {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .privacy-link {
+    font-size: 0.75rem;
+    color: var(--color-gray);
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = 'foodswipe_matches';
+  const matches: number[] = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const matchCards = document.querySelectorAll<HTMLElement>('.match-card');
+  const emptyState = document.getElementById('matches-empty')!;
+
+  function render() {
+    let hasMatches = false;
+    matchCards.forEach(card => {
+      const id = Number(card.dataset.dishId);
+      if (matches.includes(id)) {
+        card.style.display = 'flex';
+        hasMatches = true;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    emptyState.style.display = hasMatches ? 'none' : 'flex';
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-remove-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.removeId);
+      const idx = matches.indexOf(id);
+      if (idx > -1) {
+        matches.splice(idx, 1);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(matches));
+        const card = btn.closest('.match-card') as HTMLElement;
+        card.classList.add('removing');
+        card.addEventListener('transitionend', () => render(), { once: true });
+      }
+    });
+  });
+
+  render();
+</script>

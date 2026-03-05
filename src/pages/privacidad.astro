@@ -1,0 +1,200 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Politica de Privacidad - FoodSwipe">
+  <div class="privacy-page">
+    <header class="privacy-header">
+      <a href="/" class="back-btn" aria-label="Volver">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </a>
+      <h1>Politica de Privacidad</h1>
+    </header>
+
+    <div class="privacy-content">
+      <p class="updated">Ultima actualizacion: Marzo 2026</p>
+
+      <section>
+        <h2>1. Responsable del tratamiento</h2>
+        <p>
+          Esta aplicacion web ha sido creada para el evento "Mercado Gastronomico de las Fiestas 2026"
+          organizado por <strong>Nakama | Restaurante Fusion Asiatica y Mediterranea</strong>.
+        </p>
+        <ul>
+          <li><strong>Razon social:</strong> OLA JAPONESA S.L.</li>
+          <li><strong>CIF:</strong> B56631914</li>
+          <li><strong>Domicilio:</strong> Calle Obispo Climent 3, 12001 Castellon de la Plana (Castellon), Espana</li>
+          <li><strong>Email:</strong> nakamarestaurantecastellon@gmail.com</li>
+          <li><strong>Telefono:</strong> +34 627 94 44 81</li>
+          <li><strong>Registro Mercantil:</strong> Tomo 1913, folio 209, hoja CS-47207</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. Datos que NO recopilamos</h2>
+        <p>
+          Esta aplicacion <strong>no recopila, almacena ni transmite ningun dato personal</strong> de los usuarios.
+          En cumplimiento del Reglamento General de Proteccion de Datos (RGPD) - Reglamento (UE) 2016/679 -
+          y la Ley Organica 3/2018 de Proteccion de Datos Personales y garantia de los derechos digitales (LOPDGDD):
+        </p>
+        <ul>
+          <li>No se recogen datos identificativos (nombre, email, telefono, etc.)</li>
+          <li>No se utilizan cookies de rastreo ni de terceros</li>
+          <li>No se emplean herramientas de analitica web</li>
+          <li>No se realizan perfiles de usuario</li>
+          <li>No se comparten datos con terceros</li>
+          <li>No se realizan transferencias internacionales de datos</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>3. Almacenamiento local</h2>
+        <p>
+          La unica informacion que se guarda es la seleccion de platos favoritos ("matches") del usuario.
+          Esta informacion:
+        </p>
+        <ul>
+          <li>Se almacena exclusivamente en el dispositivo del usuario mediante <strong>localStorage</strong> del navegador</li>
+          <li><strong>Nunca se envia a ningun servidor</strong></li>
+          <li>No contiene datos personales de ningun tipo</li>
+          <li>Puede ser eliminada en cualquier momento por el usuario desde la propia aplicacion o borrando los datos del navegador</li>
+          <li>No se considera tratamiento de datos personales segun el RGPD al no salir del dispositivo del usuario</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. Cookies</h2>
+        <p>
+          Esta aplicacion <strong>no utiliza cookies</strong> de ningun tipo. El almacenamiento local (localStorage)
+          utilizado no se considera una cookie segun la Directiva ePrivacy, ya que es estrictamente necesario
+          para el funcionamiento de la funcionalidad solicitada por el usuario.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. Derechos del usuario</h2>
+        <p>
+          Al no recopilar datos personales, no es necesario ejercer los derechos de acceso, rectificacion,
+          supresion, oposicion, portabilidad o limitacion del tratamiento establecidos en los articulos 15 a 22 del RGPD.
+          No obstante, el usuario puede eliminar sus datos locales (matches guardados) en cualquier momento.
+        </p>
+      </section>
+
+      <section>
+        <h2>6. Seguridad</h2>
+        <p>
+          La aplicacion se sirve a traves de HTTPS, garantizando la seguridad en la transmision.
+          Al no almacenar datos en servidores externos, se minimiza completamente el riesgo de filtraciones de datos.
+        </p>
+      </section>
+
+      <section>
+        <h2>7. Menores de edad</h2>
+        <p>
+          Esta aplicacion puede ser utilizada por personas de cualquier edad ya que no recopila
+          ningun tipo de dato personal. No se requiere consentimiento parental.
+        </p>
+      </section>
+
+      <section>
+        <h2>8. Cambios en la politica</h2>
+        <p>
+          Nos reservamos el derecho a modificar esta politica de privacidad. Cualquier cambio sera
+          publicado en esta pagina con la fecha de actualizacion correspondiente.
+        </p>
+      </section>
+
+      <section>
+        <h2>9. Contacto</h2>
+        <p>
+          Para cualquier consulta relacionada con esta politica de privacidad, puede contactar con
+          nosotros en <strong>nakamarestaurantecastellon@gmail.com</strong> o en el telefono
+          <strong>+34 627 94 44 81</strong>.
+        </p>
+      </section>
+
+      <section>
+        <h2>10. Autoridad de control</h2>
+        <p>
+          En caso de que considere que sus derechos han sido vulnerados, puede presentar una reclamacion ante la
+          Agencia Espanola de Proteccion de Datos (AEPD) en <strong>www.aepd.es</strong>.
+        </p>
+      </section>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .privacy-page {
+    min-height: 100dvh;
+  }
+
+  .privacy-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--color-surface-elevated);
+    position: sticky;
+    top: 0;
+    background: var(--color-bg);
+    z-index: 10;
+  }
+
+  .privacy-header h1 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--color-dark);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--color-dark);
+  }
+
+  .privacy-content {
+    padding: 24px 20px 40px;
+  }
+
+  .updated {
+    font-size: 0.8rem;
+    color: var(--color-gray);
+    margin-bottom: 24px;
+  }
+
+  section {
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: var(--color-dark);
+  }
+
+  p {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #555555;
+    margin-bottom: 8px;
+  }
+
+  ul {
+    list-style: disc;
+    padding-left: 20px;
+    font-size: 0.875rem;
+    line-height: 1.8;
+    color: #555555;
+  }
+</style>
